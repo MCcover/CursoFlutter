@@ -2,6 +2,8 @@ import 'package:cinemapedia/providers/movie/movies_providers.dart';
 import 'package:cinemapedia/providers/movie/movies_slideshow_provider.dart';
 import 'package:cinemapedia/widgets/appbar/custom_appbar.dart';
 import 'package:cinemapedia/widgets/carousel_movies/carousel_movies.dart';
+import 'package:cinemapedia/widgets/horizontal_listview_movie/horizontal_listview_movie.dart';
+import 'package:cinemapedia/widgets/navigation_bar/custom_button_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -14,6 +16,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Scaffold(
       body: _HomeView(),
+      bottomNavigationBar: CustomBottonNavigationBar(),
     );
   }
 }
@@ -26,11 +29,15 @@ class _HomeView extends ConsumerStatefulWidget {
 }
 
 class _HomeViewState extends ConsumerState<_HomeView> {
+  late final MoviesNotifier nowPlayingMoviesNotifier;
+
   @override
   void initState() {
     super.initState();
 
-    ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
+    nowPlayingMoviesNotifier = ref.read(nowPlayingMoviesProvider.notifier);
+
+    nowPlayingMoviesNotifier.loadNextPage();
   }
 
   @override
@@ -48,6 +55,12 @@ class _HomeViewState extends ConsumerState<_HomeView> {
       children: [
         const CustomAppbar(),
         CarouselMovies(movies: slideshowMovies),
+        HorizontalListviewMovie(
+          movies: nowPlayingMovies,
+          title: "En cines",
+          subTitle: "Ahora",
+          loadNextPage: nowPlayingMoviesNotifier.loadNextPage,
+        ),
       ],
     );
   }
