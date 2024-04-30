@@ -51,17 +51,25 @@ class _HomeViewState extends ConsumerState<_HomeView> {
       );
     }
 
-    return Column(
-      children: [
-        const CustomAppbar(),
-        CarouselMovies(movies: slideshowMovies),
-        HorizontalListviewMovie(
-          movies: nowPlayingMovies,
-          title: "En cines",
-          subTitle: "Ahora",
-          loadNextPage: nowPlayingMoviesNotifier.loadNextPage,
-        ),
-      ],
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          const CustomAppbar(),
+          CarouselMovies(movies: slideshowMovies),
+          HorizontalListviewMovie(
+            movies: nowPlayingMovies,
+            title: "En cines",
+            subTitle: "Ahora",
+            loadNextPage: nowPlayingMoviesNotifier.loadNextPage,
+          ),
+          HorizontalListviewMovie(
+            movies: nowPlayingMovies,
+            title: "En cines",
+            subTitle: "Ahora",
+            loadNextPage: nowPlayingMoviesNotifier.loadNextPage,
+          ),
+        ],
+      ),
     );
   }
 }

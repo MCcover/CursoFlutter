@@ -3,7 +3,8 @@ import 'package:cinemapedia/domain/movie/model/movie.dart';
 import 'package:cinemapedia/providers/movie/movie_service_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final nowPlayingMoviesProvider = StateNotifierProvider<MoviesNotifier, List<Movie>>((ref) {
+final nowPlayingMoviesProvider =
+    StateNotifierProvider<MoviesNotifier, List<Movie>>((ref) {
   final moviesService = ref.read(movieServiceProvider);
 
   return MoviesNotifier(movieService: moviesService);
@@ -11,6 +12,8 @@ final nowPlayingMoviesProvider = StateNotifierProvider<MoviesNotifier, List<Movi
 
 class MoviesNotifier extends StateNotifier<List<Movie>> {
   int currentPage = 0;
+
+  bool isLoading = false;
 
   late AMovieService _movieService;
 
@@ -21,10 +24,19 @@ class MoviesNotifier extends StateNotifier<List<Movie>> {
   }
 
   Future<void> loadNextPage() async {
+    if (isLoading) {
+      return;
+    }
+
+    isLoading = true;
+
     currentPage++;
 
-    final List<Movie> movies = await _movieService.getNowPlaying(page: currentPage);
+    final List<Movie> movies =
+        await _movieService.getNowPlaying(page: currentPage);
 
     state = [...state, ...movies];
+    await Future.delayed(const Duration(milliseconds: 1000));
+    isLoading = false;
   }
 }
