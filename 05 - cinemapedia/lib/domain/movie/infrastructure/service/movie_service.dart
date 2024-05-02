@@ -13,4 +13,19 @@ class MovieService extends AMovieService {
   Future<List<Movie>> getNowPlaying({int page = 1}) async {
     return await _movieRepository.getNowPlaying(page: page);
   }
+
+  @override
+  Future<List<Movie>> getPopular({int page = 1}) async {
+    return await _movieRepository.getPopular(page: page);
+  }
+
+  @override
+  Future<List<Movie>> getUpcoming({int page = 1}) async {
+    return await _movieRepository.getUpcoming(page: page);
+  }
+
+  @override
+  Future<List<Movie>> getTopRated({int page = 1}) async {
+    return await _movieRepository.getTopRated(page: page);
+  }
 }

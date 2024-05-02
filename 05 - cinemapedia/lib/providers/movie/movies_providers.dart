@@ -1,42 +1,47 @@
-import 'package:cinemapedia/domain/movie/infrastructure/service/a_movie_service.dart';
 import 'package:cinemapedia/domain/movie/model/movie.dart';
 import 'package:cinemapedia/providers/movie/movie_service_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final nowPlayingMoviesProvider =
-    StateNotifierProvider<MoviesNotifier, List<Movie>>((ref) {
-  final moviesService = ref.read(movieServiceProvider);
-
-  return MoviesNotifier(movieService: moviesService);
+final nowPlayingMoviesProvider = StateNotifierProvider<MoviesNotifier, List<Movie>>((ref) {
+  final fetchMoreMovies = ref.watch(movieServiceProvider).getNowPlaying;
+  return MoviesNotifier(fetchMoreMovies: fetchMoreMovies);
 });
+
+final popularMoviesProvider = StateNotifierProvider<MoviesNotifier, List<Movie>>((ref) {
+  final fetchMoreMovies = ref.watch(movieServiceProvider).getPopular;
+  return MoviesNotifier(fetchMoreMovies: fetchMoreMovies);
+});
+
+final upcomingMoviesProvider = StateNotifierProvider<MoviesNotifier, List<Movie>>((ref) {
+  final fetchMoreMovies = ref.watch(movieServiceProvider).getUpcoming;
+  return MoviesNotifier(fetchMoreMovies: fetchMoreMovies);
+});
+
+final topRatedMoviesProvider = StateNotifierProvider<MoviesNotifier, List<Movie>>((ref) {
+  final fetchMoreMovies = ref.watch(movieServiceProvider).getTopRated;
+  return MoviesNotifier(fetchMoreMovies: fetchMoreMovies);
+});
+
+typedef MovieCallback = Future<List<Movie>> Function({int page});
 
 class MoviesNotifier extends StateNotifier<List<Movie>> {
   int currentPage = 0;
-
   bool isLoading = false;
-
-  late AMovieService _movieService;
+  MovieCallback fetchMoreMovies;
 
   MoviesNotifier({
-    required movieService,
-  }) : super([]) {
-    _movieService = movieService;
-  }
+    required this.fetchMoreMovies,
+  }) : super([]);
 
   Future<void> loadNextPage() async {
-    if (isLoading) {
-      return;
-    }
-
+    if (isLoading) return;
     isLoading = true;
 
     currentPage++;
-
-    final List<Movie> movies =
-        await _movieService.getNowPlaying(page: currentPage);
-
+    final List<Movie> movies = await fetchMoreMovies(page: currentPage);
     state = [...state, ...movies];
-    await Future.delayed(const Duration(milliseconds: 1000));
+
+    await Future.delayed(const Duration(milliseconds: 300));
     isLoading = false;
   }
 }

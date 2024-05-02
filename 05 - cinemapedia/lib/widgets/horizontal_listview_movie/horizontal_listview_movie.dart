@@ -66,8 +66,10 @@ class _HorizontalListviewMovieState extends State<HorizontalListviewMovie> {
               itemCount: widget.movies.length,
               physics: const BouncingScrollPhysics(),
               itemBuilder: (context, index) {
-                return _Slide(
-                  movie: widget.movies[index],
+                return FadeInRight(
+                  child: _Slide(
+                    movie: widget.movies[index],
+                  ),
                 );
               },
             ),
@@ -87,7 +89,7 @@ class _Title extends StatelessWidget {
   Widget build(BuildContext context) {
     final titleStyle = Theme.of(context).textTheme.titleLarge;
 
-    if (title == null || subTitle == null) {
+    if (title == null && subTitle == null) {
       return Container();
     }
 
@@ -101,11 +103,13 @@ class _Title extends StatelessWidget {
             style: titleStyle,
           ),
           const Spacer(),
-          FilledButton.tonal(
-            style: const ButtonStyle(visualDensity: VisualDensity.compact),
-            onPressed: () {},
-            child: Text(subTitle ?? ""),
-          ),
+          subTitle != null && subTitle != ""
+              ? FilledButton.tonal(
+                  style: const ButtonStyle(visualDensity: VisualDensity.compact),
+                  onPressed: () {},
+                  child: Text(subTitle ?? ""),
+                )
+              : Container(),
         ],
       ),
     );
@@ -173,7 +177,7 @@ class _Slide extends ConsumerWidget {
                   width: 3,
                 ),
                 Text(
-                  movie.voteAverage.toString(),
+                  movie.voteAverage.toStringAsFixed(1),
                   style: textStyles.bodyMedium?.copyWith(color: Colors.yellow.shade800),
                 ),
                 const Spacer(),

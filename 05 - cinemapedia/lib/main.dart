@@ -11,10 +11,10 @@ import 'package:window_manager/window_manager.dart';
 Future<void> main() async {
   await dotenv.load(fileName: '.env');
 
-  WidgetsFlutterBinding.ensureInitialized();
-  await windowManager.ensureInitialized();
-
   if (Platform.isWindows || Platform.isMacOS || Platform.isLinux) {
+    WidgetsFlutterBinding.ensureInitialized();
+    await windowManager.ensureInitialized();
+
     WindowManager.instance.setMinimumSize(const Size(400, 800));
     WindowManager.instance.setSize(const Size(400, 800));
   }
