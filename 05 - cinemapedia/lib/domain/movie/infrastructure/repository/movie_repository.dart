@@ -1,5 +1,6 @@
 import 'package:cinemapedia/config/constants/environment.dart';
 import 'package:cinemapedia/domain/movie/infrastructure/mappers/movie_mapper.dart';
+import 'package:cinemapedia/domain/movie/infrastructure/repository/model/movie_details.dart';
 import 'package:cinemapedia/domain/movie/infrastructure/repository/model/moviedb_response.dart';
 import 'package:cinemapedia/domain/movie/model/movie.dart';
 import 'package:cinemapedia/domain/movie/infrastructure/repository/a_movie_repository.dart';
@@ -81,5 +82,22 @@ class MovieRepository extends AMovieRepository {
     final List<Movie> movies = movieDbResponse.where((e) => e.posterPath != 'no-poster').map((e) => MovieMapper.movieDbToMovie(e)).toList();
 
     return movies;
+  }
+
+  @override
+  Future<Movie> getMovieById(int id) async {
+    final response = await dio.get(
+      '/movie/$id',
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception("Movie with id: $id not found.");
+    }
+
+    final movieDb = MovieDetails.fromJson(response.data);
+
+    final Movie movie = MovieMapper.movieDetailsToMovie(movieDb);
+
+    return movie;
   }
 }

@@ -28,4 +28,9 @@ class MovieService extends AMovieService {
   Future<List<Movie>> getTopRated({int page = 1}) async {
     return await _movieRepository.getTopRated(page: page);
   }
+
+  @override
+  Future<Movie> getMovieById(int id) async {
+    return await _movieRepository.getMovieById(id);
+  }
 }

@@ -3,7 +3,7 @@ import 'package:cinemapedia/domain/movie/infrastructure/repository/model/movie_m
 class MovieDbResponse {
   final Dates? dates;
   final int page;
-  final List<MovieMoviewDb> results;
+  final List<MovieMovieDb> results;
   final int totalPages;
   final int totalResults;
 
@@ -18,7 +18,7 @@ class MovieDbResponse {
   factory MovieDbResponse.fromJson(Map<String, dynamic> json) => MovieDbResponse(
         dates: json["dates"] != null ? Dates.fromJson(json["dates"]) : null,
         page: json["page"],
-        results: List<MovieMoviewDb>.from(json["results"].map((x) => MovieMoviewDb.fromJson(x))),
+        results: List<MovieMovieDb>.from(json["results"].map((x) => MovieMovieDb.fromJson(x))),
         totalPages: json["total_pages"],
         totalResults: json["total_results"],
       );
