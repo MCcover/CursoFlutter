@@ -10,7 +10,7 @@ class ActorService implements AActorService {
   }
 
   @override
-  Future<List<Actor>> getActorsByMovie(String movieId) async {
-    return await _actorRepository.getActorsByMovie(movieId);
+  Future<List<Actor>> getActorsByMovie(String movieId) {
+    return _actorRepository.getActorsByMovie(movieId);
   }
 }
