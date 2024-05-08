@@ -85,7 +85,7 @@ class MovieRepository extends AMovieRepository {
   }
 
   @override
-  Future<Movie> getMovieById(int id) async {
+  Future<Movie> getMovieById(String id) async {
     final response = await dio.get(
       '/movie/$id',
     );

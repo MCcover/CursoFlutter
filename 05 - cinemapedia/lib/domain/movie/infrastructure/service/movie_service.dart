@@ -30,7 +30,7 @@ class MovieService extends AMovieService {
   }
 
   @override
-  Future<Movie> getMovieById(int id) async {
+  Future<Movie> getMovieById(String id) async {
     return await _movieRepository.getMovieById(id);
   }
 }
