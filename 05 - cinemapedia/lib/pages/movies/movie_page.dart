@@ -89,6 +89,12 @@ class _CustomSliverAppBar extends StatelessWidget {
               child: Image.network(
                 movie.posterPath,
                 fit: BoxFit.cover,
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress != null) {
+                    return const SizedBox();
+                  }
+                  return FadeIn(child: child);
+                },
               ),
             ),
             const SizedBox.expand(
@@ -189,7 +195,7 @@ class _MovieDetails extends StatelessWidget {
           ),
         ),
         _ActorsByMovie(movie: movie),
-        const SizedBox(height: 100),
+        const SizedBox(height: 50),
       ],
     );
   }
@@ -223,7 +229,6 @@ class _ActorsByMovie extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Actor Photo
                 FadeInRight(
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),
@@ -235,12 +240,9 @@ class _ActorsByMovie extends ConsumerWidget {
                     ),
                   ),
                 ),
-
-                // Nombre
                 const SizedBox(
                   height: 5,
                 ),
-
                 Text(actor.name, maxLines: 2),
                 Text(
                   actor.character ?? '',
