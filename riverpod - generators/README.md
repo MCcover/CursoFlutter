@@ -1,8 +1,6 @@
 ## Getting Started
 
-Ejecutar el build runner
-
-Se deben instalar estos paquetes
+These packages must be installed
 
 ```
 flutter pub add flutter_riverpod
@@ -13,13 +11,13 @@ flutter pub add dev:custom_lint
 flutter pub add dev:riverpod_lint
 ```
 
-### Una vez instalados se debe ejecutar el siguiente comando
+### Once installed, execute the following command
 ```
 flutter pub run build_runner watch
 ```
 
-### Ej creación de Provider:
-Crear un archivo: test_provider.dart
+### Example Provider creation:
+Create a file: test_provider.dart
 
 ```
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -32,6 +30,6 @@ String test(TestRef ref) {
 }
 ```
 
-El comando ejecutado anteriormente cada vez que detecte un cambio en el provider va a realizar una generacion de codigo.
+The command executed previously, whenever it detects a change in the provider, will perform a code generation.
 
-Para mas referencias, dirigirse a los ejemplos.
+For more references, refer to the examples.
