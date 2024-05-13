@@ -1,11 +1,9 @@
-# blocs_app
+## Getting Started
 
-A new Flutter project.
+These packages must be installed
 
-## Para empezar
-
-Revisar Geolocator plugin, en caso de tener cambios en la instalación
-
-[GeoLocator Package](https://pub.dev/packages/geolocator)
-
-
+```
+  flutter_bloc: ^8.1.5
+  equatable: ^2.0.5
+  get_it: ^7.7.0
+```
