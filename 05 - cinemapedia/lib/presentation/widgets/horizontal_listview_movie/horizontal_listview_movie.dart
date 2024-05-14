@@ -153,7 +153,7 @@ class _Slide extends ConsumerWidget {
                   return GestureDetector(
                     child: FadeIn(child: child),
                     onTap: () {
-                      context.push("/movie/${movie.id}");
+                      context.push("/home/0/movie/${movie.id}");
                     },
                   );
                 },
