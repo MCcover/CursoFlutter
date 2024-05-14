@@ -1,9 +1,9 @@
 import 'package:cinemapedia/config/constants/environment.dart';
 import 'package:cinemapedia/domain/movie/infrastructure/mappers/movie_mapper.dart';
+import 'package:cinemapedia/domain/movie/infrastructure/repository/a_movie_repository.dart';
 import 'package:cinemapedia/domain/movie/infrastructure/repository/model/movie_details.dart';
 import 'package:cinemapedia/domain/movie/infrastructure/repository/model/moviedb_response.dart';
 import 'package:cinemapedia/domain/movie/model/movie.dart';
-import 'package:cinemapedia/domain/movie/infrastructure/repository/a_movie_repository.dart';
 import 'package:dio/dio.dart';
 
 class MovieRepository extends AMovieRepository {
@@ -12,7 +12,7 @@ class MovieRepository extends AMovieRepository {
       baseUrl: 'https://api.themoviedb.org/3',
       queryParameters: {
         'session_id': Environment.theMovieDbKey,
-        'lenguage': 'es-MX',
+        'lenguage': 'es-ES',
       },
       headers: {
         'Authorization': 'Bearer ${Environment.theMovieDbJWT}',
@@ -99,5 +99,25 @@ class MovieRepository extends AMovieRepository {
     final Movie movie = MovieMapper.movieDetailsToMovie(movieDb);
 
     return movie;
+  }
+
+  @override
+  Future<List<Movie>> searchMovies(String query) async {
+    if (query.trim().isEmpty) {
+      return [];
+    }
+
+    final response = await dio.get(
+      '/search/movie',
+      queryParameters: {
+        'query': query,
+      },
+    );
+
+    final movieDbResponse = MovieDbResponse.fromJson(response.data).results;
+
+    final List<Movie> movies = movieDbResponse.where((e) => e.posterPath != 'no-poster').map((e) => MovieMapper.movieDbToMovie(e)).toList();
+
+    return movies;
   }
 }

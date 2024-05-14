@@ -73,6 +73,11 @@ class _Slide extends StatelessWidget {
 
               return FadeIn(child: child);
             },
+            errorBuilder: (context, error, stackTrace) {
+              return const DecoratedBox(
+                decoration: BoxDecoration(color: Colors.black12),
+              );
+            },
           ),
         ),
       ),

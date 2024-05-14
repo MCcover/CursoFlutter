@@ -70,7 +70,6 @@ class _HomeViewState extends ConsumerState<_HomeView> {
         child: CircularProgressIndicator(),
       );
     }
-
     return CustomScrollView(
       slivers: [
         const SliverAppBar(

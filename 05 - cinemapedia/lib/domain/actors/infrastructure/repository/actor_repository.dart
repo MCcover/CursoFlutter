@@ -11,7 +11,7 @@ class ActorRepository implements AActorRepository {
       baseUrl: 'https://api.themoviedb.org/3',
       queryParameters: {
         'session_id': Environment.theMovieDbKey,
-        'lenguage': 'es-MX',
+        'lenguage': 'es-ES',
       },
       headers: {
         'Authorization': 'Bearer ${Environment.theMovieDbJWT}',
