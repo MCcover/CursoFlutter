@@ -1,36 +1,21 @@
+import 'package:cinemapedia/presentation/widgets/appbar/custom_appbar.dart';
+import 'package:cinemapedia/presentation/widgets/carousel_movies/carousel_movies.dart';
+import 'package:cinemapedia/presentation/widgets/horizontal_listview_movie/horizontal_listview_movie.dart';
+import 'package:cinemapedia/presentation/widgets/screen_loader/screen_loader.dart';
 import 'package:cinemapedia/providers/movie/initial_loading_provider.dart';
 import 'package:cinemapedia/providers/movie/movies_providers.dart';
 import 'package:cinemapedia/providers/movie/movies_slideshow_provider.dart';
-import 'package:cinemapedia/widgets/appbar/custom_appbar.dart';
-import 'package:cinemapedia/widgets/carousel_movies/carousel_movies.dart';
-import 'package:cinemapedia/widgets/horizontal_listview_movie/horizontal_listview_movie.dart';
-import 'package:cinemapedia/widgets/navigation_bar/custom_button_navigation_bar.dart';
-import 'package:cinemapedia/widgets/screen_loader/screen_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomePage extends StatelessWidget {
-  static const name = 'home-page';
-
-  const HomePage({super.key});
+class HomeView extends ConsumerStatefulWidget {
+  const HomeView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: _HomeView(),
-      bottomNavigationBar: CustomBottonNavigationBar(),
-    );
-  }
+  HomeViewState createState() => HomeViewState();
 }
 
-class _HomeView extends ConsumerStatefulWidget {
-  const _HomeView();
-
-  @override
-  _HomeViewState createState() => _HomeViewState();
-}
-
-class _HomeViewState extends ConsumerState<_HomeView> {
+class HomeViewState extends ConsumerState<HomeView> {
   late final MoviesNotifier nowPlayingMoviesNotifier;
   late final MoviesNotifier popularMoviesNotifier;
   late final MoviesNotifier upcomingMoviesNotifier;
