@@ -2,7 +2,7 @@ import 'package:cinemapedia/config/constants/environment.dart';
 import 'package:cinemapedia/domain/actors/infrastructure/repository/a_actor_repository.dart';
 import 'package:cinemapedia/domain/actors/infrastructure/repository/mappers/actor_mapper.dart';
 import 'package:cinemapedia/domain/actors/infrastructure/repository/model/credits_response.dart';
-import 'package:cinemapedia/domain/movie/model/actor.dart';
+import 'package:cinemapedia/domain/actors/model/actor.dart';
 import 'package:dio/dio.dart';
 
 class ActorRepository implements AActorRepository {

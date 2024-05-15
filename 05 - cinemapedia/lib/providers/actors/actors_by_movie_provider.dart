@@ -1,4 +1,4 @@
-import 'package:cinemapedia/domain/movie/model/actor.dart';
+import 'package:cinemapedia/domain/actors/model/actor.dart';
 import 'package:cinemapedia/providers/actors/actor_service_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

@@ -1,8 +1,8 @@
 import 'package:cinemapedia/config/constants/environment.dart';
-import 'package:cinemapedia/domain/movie/infrastructure/mappers/movie_mapper.dart';
-import 'package:cinemapedia/domain/movie/infrastructure/repository/a_movie_repository.dart';
-import 'package:cinemapedia/domain/movie/infrastructure/repository/model/movie_details.dart';
-import 'package:cinemapedia/domain/movie/infrastructure/repository/model/moviedb_response.dart';
+import 'package:cinemapedia/domain/movie/infrastructure/externals/abstracts/repository/a_movie_repository.dart';
+import 'package:cinemapedia/domain/movie/infrastructure/externals/moviebd/mappers/movie_mapper.dart';
+import 'package:cinemapedia/domain/movie/infrastructure/externals/moviebd/repository/model/movie_details.dart';
+import 'package:cinemapedia/domain/movie/infrastructure/externals/moviebd/repository/model/moviedb_response.dart';
 import 'package:cinemapedia/domain/movie/model/movie.dart';
 import 'package:dio/dio.dart';
 

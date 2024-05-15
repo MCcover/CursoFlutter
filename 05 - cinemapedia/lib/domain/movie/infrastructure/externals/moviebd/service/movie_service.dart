@@ -1,6 +1,6 @@
-import 'package:cinemapedia/domain/movie/infrastructure/repository/a_movie_repository.dart';
+import 'package:cinemapedia/domain/movie/infrastructure/externals/abstracts/repository/a_movie_repository.dart';
+import 'package:cinemapedia/domain/movie/infrastructure/externals/abstracts/service/a_movie_service.dart';
 import 'package:cinemapedia/domain/movie/model/movie.dart';
-import 'package:cinemapedia/domain/movie/infrastructure/service/a_movie_service.dart';
 
 class MovieService extends AMovieService {
   late AMovieRepository _movieRepository;
