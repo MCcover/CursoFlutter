@@ -2,6 +2,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:cinemapedia/domain/movie/model/movie.dart';
 import 'package:cinemapedia/providers/actors/actors_by_movie_provider.dart';
 import 'package:cinemapedia/providers/movie/movie_details_provider.dart';
+import 'package:cinemapedia/providers/storage/local_storage_service_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -61,7 +62,13 @@ class MoviePageState extends ConsumerState<MoviePage> {
   }
 }
 
-class _CustomSliverAppBar extends StatelessWidget {
+final isFavoriteProvider = FutureProvider.family.autoDispose((ref, int idMovie) {
+  final service = ref.watch(localStorageServiceProvider);
+
+  return service.isMovieFavorite(idMovie);
+});
+
+class _CustomSliverAppBar extends ConsumerWidget {
   final Movie movie;
 
   const _CustomSliverAppBar({
@@ -69,24 +76,37 @@ class _CustomSliverAppBar extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.of(context).size;
-
+    final isFavoriteFuture = ref.watch(isFavoriteProvider(movie.id));
+    final localStoreService = ref.watch(localStorageServiceProvider);
     return SliverAppBar(
       backgroundColor: Colors.black,
       expandedHeight: size.height * 0.7,
       foregroundColor: Colors.white,
       actions: [
         IconButton(
-          onPressed: () {},
-          // icon: const Icon(
-          //   size: 30,
-          //   Icons.favorite_border_outlined,
-          // ),
-          icon: const Icon(
-            size: 30,
-            Icons.favorite_rounded,
-            color: Colors.red,
+          onPressed: () {
+            localStoreService.toggleFavorite(movie);
+            ref.refresh(isFavoriteProvider(movie.id));
+          },
+          icon: isFavoriteFuture.when(
+            loading: () => const CircularProgressIndicator(strokeWidth: 2),
+            data: (data) {
+              if (data) {
+                return const Icon(
+                  size: 30,
+                  Icons.favorite_rounded,
+                  color: Colors.red,
+                );
+              } else {
+                return const Icon(
+                  size: 30,
+                  Icons.favorite_border_outlined,
+                );
+              }
+            },
+            error: (_, __) => throw UnimplementedError(),
           ),
         ),
       ],
@@ -94,7 +114,7 @@ class _CustomSliverAppBar extends StatelessWidget {
         titlePadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         title: Text(
           movie.title,
-          style: const TextStyle(fontSize: 20),
+          style: const TextStyle(fontSize: 20, color: Colors.white),
           textAlign: TextAlign.start,
         ),
         background: Stack(
