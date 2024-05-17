@@ -1,6 +1,8 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:cinemapedia/domain/movie/model/movie.dart';
 import 'package:cinemapedia/helpers/human_formats.dart';
+import 'package:cinemapedia/presentation/widgets/custom_gradient/custon_gradient.dart';
+import 'package:cinemapedia/providers/movie/is_favorite_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -131,34 +133,8 @@ class _Slide extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            height: 225,
-            width: 150,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: Image.network(
-                movie.posterPath,
-                fit: BoxFit.cover,
-                width: 150,
-                height: 225,
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress != null) {
-                    return const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Center(
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      ),
-                    );
-                  }
-                  return GestureDetector(
-                    child: FadeIn(child: child),
-                    onTap: () {
-                      context.push("/home/0/movie/${movie.id}");
-                    },
-                  );
-                },
-              ),
-            ),
+          _MoviePoster(
+            movie: movie,
           ),
           SizedBox(
             width: 150,
@@ -196,6 +172,104 @@ class _Slide extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _MoviePoster extends ConsumerWidget {
+  final Movie movie;
+
+  const _MoviePoster({
+    required this.movie,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isFavoriteFuture = ref.watch(isFavoriteProvider(movie.id));
+
+    return GestureDetector(
+      onTap: () {
+        context.push('/home/0/movie/${movie.id}');
+      },
+      child: SizedBox(
+        height: 225,
+        width: 150,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: Stack(
+            children: [
+              _MovieImage(movie: movie),
+              const CustomGradient(
+                begin: Alignment.topRight,
+                end: Alignment.bottomLeft,
+                stops: [0.0, 0.3],
+                colors: [
+                  Colors.black87,
+                  Colors.transparent,
+                ],
+              ),
+              Column(
+                children: [
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      isFavoriteFuture.when(
+                        data: (data) {
+                          if (data) {
+                            return const Icon(
+                              size: 30,
+                              Icons.favorite_rounded,
+                              color: Colors.red,
+                            );
+                          } else {
+                            return Container();
+                          }
+                        },
+                        error: (_, __) => throw UnimplementedError(),
+                        loading: () => const CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                      const SizedBox(width: 5),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _MovieImage extends StatelessWidget {
+  final Movie movie;
+
+  const _MovieImage({
+    required this.movie,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Image.network(
+      movie.posterPath,
+      fit: BoxFit.cover,
+      width: 150,
+      height: 225,
+      loadingBuilder: (context, child, loadingProgress) {
+        if (loadingProgress != null) {
+          return const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Center(
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+          );
+        }
+        return FadeIn(child: child);
+      },
     );
   }
 }

@@ -1,6 +1,8 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:cinemapedia/domain/movie/model/movie.dart';
+import 'package:cinemapedia/presentation/widgets/custom_gradient/custon_gradient.dart';
 import 'package:cinemapedia/providers/actors/actors_by_movie_provider.dart';
+import 'package:cinemapedia/providers/movie/is_favorite_provider.dart';
 import 'package:cinemapedia/providers/movie/movie_details_provider.dart';
 import 'package:cinemapedia/providers/storage/local_storage_service_provider.dart';
 import 'package:flutter/material.dart';
@@ -62,12 +64,6 @@ class MoviePageState extends ConsumerState<MoviePage> {
   }
 }
 
-final isFavoriteProvider = FutureProvider.family.autoDispose((ref, int idMovie) {
-  final service = ref.watch(localStorageServiceProvider);
-
-  return service.isMovieFavorite(idMovie);
-});
-
 class _CustomSliverAppBar extends ConsumerWidget {
   final Movie movie;
 
@@ -79,16 +75,16 @@ class _CustomSliverAppBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.of(context).size;
     final isFavoriteFuture = ref.watch(isFavoriteProvider(movie.id));
-    final localStoreService = ref.watch(localStorageServiceProvider);
+
     return SliverAppBar(
       backgroundColor: Colors.black,
       expandedHeight: size.height * 0.7,
       foregroundColor: Colors.white,
       actions: [
         IconButton(
-          onPressed: () {
-            localStoreService.toggleFavorite(movie);
-            ref.refresh(isFavoriteProvider(movie.id));
+          onPressed: () async {
+            await ref.read(localStorageServiceProvider).toggleFavorite(movie);
+            ref.invalidate(isFavoriteProvider(movie.id));
           },
           icon: isFavoriteFuture.when(
             loading: () => const CircularProgressIndicator(strokeWidth: 2),
@@ -131,7 +127,7 @@ class _CustomSliverAppBar extends ConsumerWidget {
                 },
               ),
             ),
-            const _CustomGradient(
+            const CustomGradient(
               begin: Alignment.topRight,
               end: Alignment.bottomLeft,
               stops: [0.0, 0.2],
@@ -140,7 +136,7 @@ class _CustomSliverAppBar extends ConsumerWidget {
                 Colors.transparent,
               ],
             ),
-            const _CustomGradient(
+            const CustomGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               stops: [0.7, 1.0],
@@ -149,7 +145,7 @@ class _CustomSliverAppBar extends ConsumerWidget {
                 Colors.black87,
               ],
             ),
-            const _CustomGradient(
+            const CustomGradient(
               begin: Alignment.topLeft,
               stops: [0.0, 0.4],
               colors: [
@@ -284,36 +280,6 @@ class _ActorsByMovie extends ConsumerWidget {
             ),
           );
         },
-      ),
-    );
-  }
-}
-
-class _CustomGradient extends StatelessWidget {
-  final AlignmentGeometry begin;
-  final AlignmentGeometry end;
-  final List<double> stops;
-  final List<Color> colors;
-
-  const _CustomGradient({
-    this.begin = Alignment.centerLeft,
-    this.end = Alignment.centerRight,
-    required this.stops,
-    required this.colors,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox.expand(
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: begin,
-            end: end,
-            stops: stops,
-            colors: colors,
-          ),
-        ),
       ),
     );
   }
