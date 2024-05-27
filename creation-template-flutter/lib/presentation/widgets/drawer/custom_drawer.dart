@@ -5,7 +5,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 class CustomDrawer extends StatelessWidget {
-  const CustomDrawer({super.key});
+  final GlobalKey<ScaffoldState> scaffoldKey;
+  const CustomDrawer({
+    super.key,
+    required this.scaffoldKey,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,9 +22,9 @@ class CustomDrawer extends StatelessWidget {
               padding: const EdgeInsets.all(24),
               child: Column(
                 children: [
-                  _drawerItems(topItems),
+                  _drawerItems(topItems, scaffoldKey),
                   const Spacer(),
-                  _drawerItems(bottomItems),
+                  _drawerItems(bottomItems, scaffoldKey),
                 ],
               ),
             ),
@@ -49,24 +53,26 @@ class CustomDrawer extends StatelessWidget {
     );
   }
 
-  Widget _drawerItems(List<MenuItem> items) {
+  Widget _drawerItems(List<MenuItem> items, GlobalKey<ScaffoldState> scaffoldKey) {
     return ListView.builder(
       padding: EdgeInsets.zero,
       itemCount: items.length,
       shrinkWrap: true,
       itemBuilder: (BuildContext context, int index) {
         var data = items[index];
-        return DrawerNavigationItem(item: data);
+        return DrawerNavigationItem(item: data, scaffoldKey: scaffoldKey);
       },
     );
   }
 }
 
 class DrawerNavigationItem extends ConsumerWidget {
+  final GlobalKey<ScaffoldState> scaffoldKey;
   final MenuItem item;
   const DrawerNavigationItem({
     super.key,
     required this.item,
+    required this.scaffoldKey,
   });
 
   @override
@@ -96,7 +102,7 @@ class DrawerNavigationItem extends ConsumerWidget {
                 item.leadingIcon,
                 color: item == selectedMenu ? const Color.fromARGB(255, 112, 119, 249) : Colors.grey[600],
               ),
-              onTap: () => _handleItemClick(context, item, ref),
+              onTap: () => _handleItemClick(context, item, ref, scaffoldKey),
             ),
           ),
         ),
@@ -105,7 +111,9 @@ class DrawerNavigationItem extends ConsumerWidget {
     );
   }
 
-  void _handleItemClick(BuildContext context, MenuItem destination, WidgetRef ref) {
+  void _handleItemClick(BuildContext context, MenuItem destination, WidgetRef ref, GlobalKey<ScaffoldState> scaffoldKey) {
+    scaffoldKey.currentState!.closeDrawer();
+
     if (destination.navigationInfo.view == null) {
       switch (destination.navigationInfo.navigationType) {
         case NavigationType.go:
@@ -115,9 +123,9 @@ class DrawerNavigationItem extends ConsumerWidget {
           context.push(destination.navigationInfo.navigateTo!);
           break;
       }
+      return;
     }
 
     ref.read(drawerItemProvider.notifier).navigateTo(destination);
-    Navigator.pop(context);
   }
 }

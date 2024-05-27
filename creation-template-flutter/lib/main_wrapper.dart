@@ -9,10 +9,12 @@ class MainWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      drawer: CustomDrawer(),
-      appBar: CustomAppBar(),
-      body: AppBody(),
+    final scaffoldKey = GlobalKey<ScaffoldState>();
+    return Scaffold(
+      key: scaffoldKey,
+      drawer: CustomDrawer(scaffoldKey: scaffoldKey),
+      appBar: const CustomAppBar(),
+      body: const AppBody(),
     );
   }
 }
