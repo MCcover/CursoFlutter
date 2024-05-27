@@ -64,14 +64,6 @@ final List<MenuItem> drawerItems = [
       view: CounterPage(),
     ),
   ),
-  const MenuItem(
-    title: 'Logout',
-    leadingIcon: Icons.logout_outlined,
-    bottom: true,
-    navigationInfo: NavigationInfo(
-      navigateTo: '/login',
-    ),
-  ),
 ];
 
 List<MenuItem> get topItems => drawerItems.where((item) => !item.bottom).toList();

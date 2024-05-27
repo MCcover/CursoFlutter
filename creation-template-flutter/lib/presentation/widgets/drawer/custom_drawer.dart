@@ -22,8 +22,10 @@ class CustomDrawer extends StatelessWidget {
               padding: const EdgeInsets.all(24),
               child: Column(
                 children: [
-                  _drawerItems(topItems, scaffoldKey),
-                  const Spacer(),
+                  Expanded(
+                    child: _drawerItems(topItems, scaffoldKey),
+                  ),
+                  const Divider(),
                   _drawerItems(bottomItems, scaffoldKey),
                 ],
               ),
