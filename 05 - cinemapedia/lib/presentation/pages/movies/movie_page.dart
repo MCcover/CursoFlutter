@@ -4,7 +4,7 @@ import 'package:cinemapedia/presentation/widgets/custom_gradient/custon_gradient
 import 'package:cinemapedia/providers/actors/actors_by_movie_provider.dart';
 import 'package:cinemapedia/providers/movie/is_favorite_provider.dart';
 import 'package:cinemapedia/providers/movie/movie_details_provider.dart';
-import 'package:cinemapedia/providers/storage/local_storage_service_provider.dart';
+import 'package:cinemapedia/providers/storage/favorite_movies_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -83,7 +83,8 @@ class _CustomSliverAppBar extends ConsumerWidget {
       actions: [
         IconButton(
           onPressed: () async {
-            await ref.read(localStorageServiceProvider).toggleFavorite(movie);
+            await ref.read(favoriteMovieProvider.notifier).toggleFavorite(movie);
+
             ref.invalidate(isFavoriteProvider(movie.id));
           },
           icon: isFavoriteFuture.when(
