@@ -1,6 +1,7 @@
 import 'package:forms_app/pages/bloc/bloc_page.dart';
 import 'package:forms_app/pages/cubits/cubits_page.dart';
 import 'package:forms_app/pages/home/home_page.dart';
+import 'package:forms_app/pages/register/register_page.dart';
 import 'package:go_router/go_router.dart';
 
 final appRouter = GoRouter(
@@ -18,8 +19,13 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: '/bloc',
-      name: BlocPage.name,
-      builder: (context, state) => const BlocPage(),
+      name: BlocCounterPage.name,
+      builder: (context, state) => const BlocCounterPage(),
+    ),
+    GoRoute(
+      path: '/register',
+      name: RegisterPage.name,
+      builder: (context, state) => const RegisterPage(),
     ),
   ],
 );
