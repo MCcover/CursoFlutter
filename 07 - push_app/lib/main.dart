@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:push_app/blocs/notifications/notifications_bloc.dart';
+import 'package:push_app/config/local_notification/local_notification.dart';
 import 'package:push_app/config/router/app_router.dart';
 import 'package:push_app/config/theme/app_theme.dart';
 
@@ -22,6 +23,7 @@ Future<void> main() async {
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
   await NotificationsBloc.initializeFirebase();
+  await LocalNotifications.initializeLocalNotifications();
 
   runApp(MultiBlocProvider(
     providers: [
@@ -41,6 +43,50 @@ class MainApp extends StatelessWidget {
       theme: AppTheme().getTheme(),
       routerConfig: appRouter,
       scrollBehavior: CustomScrollBehavior(),
+      builder: (context, child) => HandleNotificationInteractions(child: child!),
     );
+  }
+}
+
+class HandleNotificationInteractions extends StatefulWidget {
+  final Widget child;
+  const HandleNotificationInteractions({
+    super.key,
+    required this.child,
+  });
+
+  @override
+  State<HandleNotificationInteractions> createState() => _HandleNotificationInteractionsState();
+}
+
+class _HandleNotificationInteractionsState extends State<HandleNotificationInteractions> {
+  // It is assumed that all messages contain a data field with the key 'type'
+  Future<void> setupInteractedMessage() async {
+    RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
+
+    if (initialMessage != null) {
+      _handleMessage(initialMessage);
+    }
+
+    FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
+  }
+
+  void _handleMessage(RemoteMessage message) {
+    Navigator.pushNamed(
+      context,
+      '/details/${message.messageId!.replaceAll(':', '').replaceAll('%', '')}',
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    setupInteractedMessage();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.child;
   }
 }

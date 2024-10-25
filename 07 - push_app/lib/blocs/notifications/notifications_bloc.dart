@@ -1,9 +1,12 @@
+import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:push_app/config/local_notification/local_notification.dart';
 import 'package:push_app/domain/push_message.dart';
 import 'package:push_app/firebase_options.dart';
 
@@ -20,6 +23,8 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   NotificationsBloc() : super(const NotificationsState()) {
     on<NotificationStatusChanged>(_notificationStatusChanged);
 
+    on<NotificationRecieved>(_onNotificationRecieved);
+
     _initialStatusCheck();
     _onForegroundMessage();
   }
@@ -28,13 +33,6 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-  }
-
-  void _notificationStatusChanged(NotificationStatusChanged event, Emitter<NotificationsState> emit) {
-    emit(
-      state.copyWith(status: event.status),
-    );
-    _getFCMToken();
   }
 
   void _getFCMToken() async {
@@ -61,6 +59,17 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
       data: message.data,
       imageUrl: Platform.isAndroid ? message.notification!.android?.imageUrl : message.notification!.apple?.imageUrl,
     );
+
+    // ignore: avoid_print
+    print(notification);
+
+    LocalNotifications.showLocalNotification(
+      id: Random().nextInt(9999999),
+      title: notification.title,
+      body: notification.body,
+      data: notification.messageId,
+    );
+    add(NotificationRecieved(notification));
   }
 
   void _onForegroundMessage() {
@@ -84,6 +93,32 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
       sound: true,
     );
 
+    await LocalNotifications.requestPermissionLocalNotification();
+
     add(NotificationStatusChanged(settings.authorizationStatus));
+  }
+
+  void _notificationStatusChanged(NotificationStatusChanged event, Emitter<NotificationsState> emit) {
+    emit(
+      state.copyWith(status: event.status),
+    );
+    _getFCMToken();
+  }
+
+  void _onNotificationRecieved(NotificationRecieved event, Emitter<NotificationsState> emit) {
+    var nots = [...state.notifications, event.message];
+
+    emit(
+      state.copyWith(notifications: nots),
+    );
+  }
+
+  PushMessage? getMessageById(String pushMessageId) {
+    final messages = state.notifications.where((x) => x.messageId == pushMessageId).toList();
+
+    if (messages.isEmpty) {
+      return null;
+    }
+    return messages[0];
   }
 }
